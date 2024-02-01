@@ -105,7 +105,7 @@ def depthFirstSearch(problem: SearchProblem):
                 stack.push((successor, new_actions))
     return []
     """
-    fringe, visited = util.Stack(), set()
+    fringe, visited = util.Stack(), []
     fringe.push((problem.getStartState(), [], 0))
     
     while not fringe.isEmpty():
@@ -113,7 +113,7 @@ def depthFirstSearch(problem: SearchProblem):
         if problem.isGoalState(node):
             return path
         if node not in visited:
-            visited.add(node)
+            visited.append(node)
             for coord, move, cost in problem.getSuccessors(node):
                 fringe.push((coord, path + [move], total + cost))
             
@@ -121,7 +121,7 @@ def depthFirstSearch(problem: SearchProblem):
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
-    fringe, visited = util.Queue(), set()
+    fringe, visited = util.Queue(), []
     fringe.push((problem.getStartState(), [], 0))
 
     while not fringe.isEmpty():
@@ -129,14 +129,14 @@ def breadthFirstSearch(problem: SearchProblem):
         if problem.isGoalState(node):
             return path
         if node not in visited:
-            visited.add(node)
+            visited.append(node)
             for coord, move, cost in problem.getSuccessors(node):
                 fringe.push((coord, path + [move], total + cost))
     #util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
-    fringe, visited = util.PriorityQueue(), set()
+    fringe, visited = util.PriorityQueue(), []
     fringe.push((problem.getStartState(), [], 0), 0)
 
     while not fringe.isEmpty():
@@ -144,7 +144,7 @@ def uniformCostSearch(problem: SearchProblem):
         if problem.isGoalState(node):
             return path
         if node not in visited:
-            visited.add(node)
+            visited.append(node)
             for coord, move, cost in problem.getSuccessors(node):
                 if coord not in visited:
                     fringe.push((coord, path + [move], total + cost), total + cost)
@@ -159,7 +159,7 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    fringe, visited = util.PriorityQueue(), set()
+    fringe, visited = util.PriorityQueue(), []
     current = (problem.getStartState(), [])
     total_cost = 0 + heuristic(current[0], problem)
     fringe.push((current, total_cost), total_cost)
@@ -169,7 +169,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
         if problem.isGoalState(node):
             return path
         if node not in visited:
-            visited.add(node)
+            visited.append(node)
             for coord, move, cost in problem.getSuccessors(node):
                 updated_path = path + [move]
                 new_total_cost = total_cost - heuristic(node, problem) + cost + heuristic(coord, problem)
