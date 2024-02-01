@@ -174,7 +174,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
                 updated_path = path + [move]
                 new_total_cost = total_cost - heuristic(node, problem) + cost + heuristic(coord, problem)
                 fringe.push(((coord, updated_path), new_total_cost), new_total_cost)
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
 
 
 # Abbreviations
