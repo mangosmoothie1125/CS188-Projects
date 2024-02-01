@@ -448,7 +448,7 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     consistent as well.
 
     If using A* ever finds a solution that is worse uniform cost search finds,
-    your heuristic is *not* consistent, and probably not admissible!  On the
+    your heuristic is not consistent, and probably not admissible!  On the
     other hand, inadmissible or inconsistent heuristics may find optimal
     solutions, so be careful.
 
@@ -460,7 +460,7 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     problem.  For example, problem.walls gives you a Grid of where the walls
     are.
 
-    If you want to *store* information to be reused in other calls to the
+    If you want to store information to be reused in other calls to the
     heuristic, there is a dictionary called problem.heuristicInfo that you can
     use. For example, if you only want to count the walls once and store that
     value, try: problem.heuristicInfo['wallCount'] = problem.walls.count()
@@ -469,18 +469,26 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     # Get the coordinates of all the remaining food pellets
+    if problem.isGoalState(state):
+        return 0
+    
+    # Get the coordinates of all remaining food pellets
     remaining_food = foodGrid.asList()
 
-    if not remaining_food:
-        # If there is no remaining food, the heuristic is 0
-        return 0
+    # Update the heuristic information with the count of walls
+    problem.heuristicInfo['wallCount'] = problem.walls.count()
+    dis = []
 
-    # Calculate the Manhattan distance to the nearest food pellet
-    min_distance = min([util.manhattanDistance(position, food) for food in remaining_food])
+    # Calculate distances from the current position to each remaining food pellet
+    for food_position in remaining_food:
+        dis.append(mazeDistance(position, food_position, problem.startingGameState))
 
-    # Admissible heuristic: return only the distance
-    return min_distance
-    #return 0
+    # If the wall count is greater than 10, consider only the first 3 (or whatever number) food pellets
+    if problem.heuristicInfo['wallCount'] > 10:
+        dis = dis[:3]
+
+    # Return the maximum calculated distance as the heuristic value
+    return max(dis)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
